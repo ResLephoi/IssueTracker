@@ -1,0 +1,33 @@
+<div>
+<h1>Board</h1>
+<div class="board">
+  <div class="list" *ngFor="let list of board.lists">
+    <h2>{{ list.title }}</h2>
+    <button (click)="openNewCardDialog(list)">Add Card</button>
+    <div class="card" *ngFor="let card of list.cards" cdkDrag>
+      <h3>{{ card.title }}</h3>
+      <p>{{ card.description }}</p>
+      <p *ngIf="card.labels.length">Labels: {{ card.labels.join(', ') }}</p>
+      <button (click)="editCard(card)">Edit</button>
+      <button (click)="deleteCard(list, card)">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showEditDialog" class="dialog">
+  <h2>{{ editingCard ? 'Edit Card' : 'New Card' }}</h2>
+  <form [formGroup]="cardForm" (ngSubmit)="saveCard()">
+    <label for="title">Title:</label>
+    <input id="title" formControlName="title" />
+    
+    <label for="description">Description:</label>
+    <textarea id="description" formControlName="description"></textarea>
+    
+    <label for="labels">Labels (comma separated):</label>
+    <input id="labels" formControlName="labels" />
+    
+    <button type="submit" [disabled]="cardForm.invalid">Save</button>
+    <button type="button" (click)="closeDialog()">Cancel</button>
+  </form>
+</div>
+</div>
