@@ -1,4 +1,4 @@
-﻿namespace IssueTracker.Models
+﻿namespace IssueTracker.Domain.Entities
 {
     public class LoginRequest
     {

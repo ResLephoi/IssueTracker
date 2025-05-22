@@ -1,4 +1,5 @@
-﻿using IssueTracker.Models;
+﻿using IssueTracker.Application.Services;
+using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IssueTracker.Controllers
@@ -7,55 +8,48 @@ namespace IssueTracker.Controllers
     [Route("api/[controller]")]
     public class BoardController : ControllerBase
     {
-        private static readonly List<Board> Boards = new();
+        private readonly BoardService _boardService;
+
+        public BoardController(BoardService boardService)
+        {
+            _boardService = boardService;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var board = await _boardService.GetBoardByIdAsync(id);
+            if (board == null) return NotFound();
+            return Ok(board);
+        }
 
         [HttpGet]
-        public IActionResult GetBoards()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(Boards);
+            var boards = await _boardService.GetAllBoardsAsync();
+            return Ok(boards);
         }
 
         [HttpPost]
-        public IActionResult CreateBoard([FromBody] Board board)
+        public async Task<IActionResult> Create(Board board)
         {
-            Boards.Add(board);
-            return CreatedAtAction(nameof(GetBoards), board);
+            await _boardService.AddBoardAsync(board);
+            return CreatedAtAction(nameof(GetById), new { id = board.Id }, board);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateBoard(string id, [FromBody] Board updatedBoard)
+        public async Task<IActionResult> Update(int id, Board board)
         {
-            var board = Boards.Find(b => b.Id == id);
-            if (board == null) return NotFound();
-
-            board.Title = updatedBoard.Title;
-            board.Items = updatedBoard.Items;
+            if (id != board.Id) return BadRequest();
+            await _boardService.UpdateBoardAsync(board);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBoard(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var board = Boards.Find(b => b.Id == id);
-            if (board == null) return NotFound();
-
-            Boards.Remove(board);
+            await _boardService.DeleteBoardAsync(id);
             return NoContent();
-        }
-
-        [HttpPost("{boardId}/lists/{listId}/cards")]
-        public IActionResult AddCard(string boardId, string listId, [FromBody] Card newCard)
-        {
-            var board = Boards.Find(b => b.Id == boardId);
-            if (board == null) return NotFound();
-
-            var list = board.Items.Find(l => l.Id == listId);
-            if (list == null) return NotFound();
-
-            newCard.Id = Guid.NewGuid().ToString(); // Generate a unique ID for the card
-            list.Cards.Add(newCard);
-
-            return CreatedAtAction(nameof(GetBoards), newCard);
         }
     }
 }
