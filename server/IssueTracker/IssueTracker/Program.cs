@@ -1,3 +1,4 @@
+using AutoMapper;
 using IssueTracker.Application.Services;
 using IssueTracker.Domain.Interfaces;
 using IssueTracker.Infrastructure.Data;
@@ -21,6 +22,7 @@ builder.Services.AddScoped<CardService>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using IssueTracker.Application.Services;
+﻿using Domain.DTOs;
+using IssueTracker.Application.Services;
 using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,9 +32,9 @@ namespace IssueTracker.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Board board)
+        public async Task<IActionResult> Create(CreateBoardDTO createBoardDto)
         {
-            await _boardService.AddBoardAsync(board);
+            var board = await _boardService.AddBoardAsync(createBoardDto);
             return CreatedAtAction(nameof(GetById), new { id = board.Id }, board);
         }
 

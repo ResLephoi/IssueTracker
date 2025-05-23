@@ -1,3 +1,4 @@
+using Domain.DTOs;
 using IssueTracker.Application.Services;
 using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +32,9 @@ namespace IssueTracker.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Item item)
+        public async Task<IActionResult> Create(CreateItemDTO createItemDto)
         {
-            await _itemService.AddItemAsync(item);
+            var item = await _itemService.AddItemAsync(createItemDto);
             return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
         }
 

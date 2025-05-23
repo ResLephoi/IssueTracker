@@ -1,3 +1,5 @@
+using AutoMapper;
+using Domain.DTOs;
 using IssueTracker.Domain.Entities;
 using IssueTracker.Domain.Interfaces;
 
@@ -6,10 +8,12 @@ namespace IssueTracker.Application.Services
     public class ItemService
     {
         private readonly IItemRepository _itemRepository;
+        private readonly IMapper _mapper;
 
-        public ItemService(IItemRepository itemRepository)
+        public ItemService(IItemRepository itemRepository, IMapper mapper)
         {
             _itemRepository = itemRepository;
+            _mapper = mapper;
         }
 
         public async Task<Item?> GetItemByIdAsync(int id)
@@ -22,9 +26,11 @@ namespace IssueTracker.Application.Services
             return await _itemRepository.GetAllAsync();
         }
 
-        public async Task AddItemAsync(Item item)
+        public async Task<Item> AddItemAsync(CreateItemDTO itemDto)
         {
+            var item = _mapper.Map<Item>(itemDto);
             await _itemRepository.AddAsync(item);
+            return item;
         }
 
         public async Task UpdateItemAsync(Item item)
