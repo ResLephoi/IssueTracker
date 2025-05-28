@@ -1,10 +1,8 @@
-// filepath: /IssueTracker/IssueTracker/client/src/app/features/board/board.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Board, List, Card } from '../../../models/board.model';
-import { BoardService } from '../../core/services/board.service';
+import { Board, List, Card } from '../../models/board.model';
 
 @Component({
   selector: 'app-board',
@@ -43,16 +41,13 @@ export class BoardComponent implements OnInit {
   editingCard: Card | null = null;
   currentList: List | null = null;
   cardForm: FormGroup;
-  connectedLists: string[];
 
-  constructor(private fb: FormBuilder,
-    private boardService: BoardService) {
+  constructor(private fb: FormBuilder) {
     this.cardForm = this.fb.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
       labels: ['']
     });
-    this.connectedLists = this.board.lists.map(list => list.id);
   }
 
   ngOnInit(): void {}
@@ -88,8 +83,10 @@ export class BoardComponent implements OnInit {
   }
 
   deleteCard(list: List, card: Card) {
-    this.boardService.deleteCard(card.id).subscribe(() => {
-    });
+    const index = list.cards.indexOf(card);
+    if (index > -1) {
+      list.cards.splice(index, 1);
+    }
   }
 
   saveCard() {
