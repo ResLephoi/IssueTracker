@@ -5,6 +5,7 @@ using IssueTracker.Infrastructure.Data;
 using IssueTracker.Infrastructure.Repositories;
 using IssueTracker.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<IssueTrackerDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .LogTo(_ => {}, LogLevel.None));
 builder.Services.AddScoped<BoardService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<CardService>();
