@@ -1,15 +1,30 @@
-<div>
-<h1>Board</h1>
+<h1>{{ board.title }}</h1>
 <div class="board">
-  <div class="list" *ngFor="let list of board.lists">
-    <h2>{{ list.title }}</h2>
-    <button (click)="openNewCardDialog(list)">Add Card</button>
-    <div class="card" *ngFor="let card of list.cards" cdkDrag>
-      <h3>{{ card.title }}</h3>
-      <p>{{ card.description }}</p>
-      <p *ngIf="card.labels.length">Labels: {{ card.labels.join(', ') }}</p>
-      <button (click)="editCard(card)">Edit</button>
-      <button (click)="deleteCard(list, card)">Delete</button>
+  <div class="lists-container">
+    <div 
+      class="list" 
+      *ngFor="let list of board.lists"
+      [id]="list.id"
+      cdkDropList
+      [cdkDropListData]="list.cards"
+      [cdkDropListConnectedTo]="connectedLists"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">{{ list.title }}</h2>
+        <button (click)="openNewCardDialog(list)">Add Card</button>
+      </div>
+      <div 
+        class="card" 
+        *ngFor="let card of list.cards" 
+        cdkDrag
+      >
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.description }}</p>
+        <p *ngIf="card.labels.length">Labels: {{ card.labels.join(', ') }}</p>
+        <button (click)="editCard(card)">Edit</button>
+        <button (click)="deleteCard(list, card)">Delete</button>
+      </div>
     </div>
   </div>
 </div>
@@ -26,8 +41,9 @@
     <label for="labels">Labels (comma separated):</label>
     <input id="labels" formControlName="labels" />
     
-    <button type="submit" [disabled]="cardForm.invalid">Save</button>
-    <button type="button" (click)="closeDialog()">Cancel</button>
+    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+      <button type="submit" [disabled]="cardForm.invalid">Save</button>
+      <button type="button" (click)="closeDialog()">Cancel</button>
+    </div>
   </form>
-</div>
 </div>

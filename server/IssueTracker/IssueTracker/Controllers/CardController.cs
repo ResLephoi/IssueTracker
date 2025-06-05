@@ -1,3 +1,4 @@
+using Domain.DTOs;
 using IssueTracker.Application.Services;
 using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace IssueTracker.Controllers
             return Ok(card);
         }
 
-        [HttpGet]
+        [HttpGet("GetAllCards")]
         public async Task<IActionResult> GetAll()
         {
             var cards = await _cardService.GetAllCardsAsync();
@@ -31,17 +32,17 @@ namespace IssueTracker.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Card card)
+        public async Task<IActionResult> Create(CreateCardDTO cardDto)
         {
-            await _cardService.AddCardAsync(card);
+            var card = await _cardService.AddCardAsync(cardDto);
             return CreatedAtAction(nameof(GetById), new { id = card.Id }, card);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Card card)
+        public async Task<IActionResult> Update(UpdateCardDTO updateCardDTO)
         {
-            if (id != card.Id) return BadRequest();
-            await _cardService.UpdateCardAsync(card);
+            if (updateCardDTO.Id ==0) return BadRequest();
+            await _cardService.UpdateCardAsync(updateCardDTO);
             return NoContent();
         }
 

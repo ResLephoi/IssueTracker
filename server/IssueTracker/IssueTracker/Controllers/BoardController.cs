@@ -14,12 +14,18 @@ namespace IssueTracker.Controllers
         public BoardController(BoardService boardService)
         {
             _boardService = boardService;
-        }
-
-        [HttpGet("{id}")]
+        }        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var board = await _boardService.GetBoardByIdAsync(id);
+            if (board == null) return NotFound();
+            return Ok(board);
+        }
+
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetBoardWithItemsAndCards(int id)
+        {
+            var board = await _boardService.GetBoardWithItemsAndCardsAsync(id);
             if (board == null) return NotFound();
             return Ok(board);
         }

@@ -9,6 +9,7 @@ namespace IssueTracker.Application.Services
         public MappingProfile()
         {
             CreateMap<CreateItemDTO, Item>();
+            CreateMap<CreateCardDTO, Card>();
         }
     }
 }

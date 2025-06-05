@@ -1,15 +1,4 @@
-export interface Card {
-  id: string;
-  title: string;
-  description: string;
-  labels: string[];
-}
-
-export interface List {
-  id: string;
-  title: string;
-  cards: Card[];
-}
+import { List } from "./list.model";
 
 export interface Board {
   id: string;

@@ -21,6 +21,11 @@ namespace IssueTracker.Application.Services
             return await _boardRepository.GetByIdAsync(id);
         }
 
+        public async Task<Board> GetBoardWithItemsAndCardsAsync(int id)
+        {
+            return await _boardRepository.GetBoardWithItemsAndCardsAsync(id);
+        }
+
         public async Task<IEnumerable<Board>> GetAllBoardsAsync()
         {
             return await _boardRepository.GetAllAsync();

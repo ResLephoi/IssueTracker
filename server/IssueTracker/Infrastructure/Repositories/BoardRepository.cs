@@ -19,6 +19,14 @@ namespace IssueTracker.Infrastructure.Repositories
             return await _context.Boards.FindAsync(id);
         }
 
+        public async Task<Board> GetBoardWithItemsAndCardsAsync(int id)
+        {
+            return await _context.Boards
+                .Include(b => b.Items)
+                    .ThenInclude(i => i.Cards)
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
+
         public async Task<IEnumerable<Board>> GetAllAsync()
         {
             return await _context.Boards.ToListAsync();

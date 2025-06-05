@@ -1,3 +1,11 @@
+/* Add application styles & imports to this file! */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
 .board {
   display: flex;
   flex-direction: column;
@@ -20,35 +28,35 @@
   min-width: 280px;
   max-width: 280px;
   padding: 10px;
+}
 
-  h2 {
-    margin: 0 0 10px;
-    font-size: 16px;
-  }
+.list h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
 }
 
 .card {
   background-color: white;
-  border: 5px solid #e0e0e0;
+  border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding: 12px;
   margin-bottom: 8px;
   transition: box-shadow 0.2s ease;
+}
 
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-  h3 {
-    margin: 0 0 8px;
-    font-size: 14px;
-  }
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
 
-  p {
-    margin: 0 0 8px;
-    font-size: 12px;
-    color: #666;
-  }
+.card p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #666;
 }
 
 button {
@@ -59,19 +67,18 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin: 4px;
+}
 
-  &:hover {
-    background-color: #0056b3;
-  }
+button:hover {
+  background-color: #0056b3;
+}
 
-  &:disabled {
-    background: #a5a5a5;
-    cursor: not-allowed;
-  }
+button:disabled {
+  background: #a5a5a5;
+  cursor: not-allowed;
 }
 
 .dialog {
-  width:20%;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -83,29 +90,29 @@ button {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+}
 
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+.dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-  input,
-  textarea {
-    margin-bottom: 12px;
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-  }
+.dialog input,
+.dialog textarea {
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
 
-  label {
-    font-weight: bold;
-  }
+.dialog label {
+  font-weight: bold;
+}
 
-  textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
+.dialog textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 .cdk-drag-preview {
