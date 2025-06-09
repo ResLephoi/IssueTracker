@@ -14,43 +14,73 @@ namespace IssueTracker.Controllers
         public ItemController(ItemService itemService)
         {
             _itemService = itemService;
-        }
-
-        [HttpGet("{id}")]
+        }        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var item = await _itemService.GetItemByIdAsync(id);
-            if (item == null) return NotFound();
-            return Ok(item);
-        }
-
-        [HttpGet]
+            try
+            {
+                var item = await _itemService.GetItemByIdAsync(id);
+                if (item == null) return NotFound();
+                return Ok(item);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var items = await _itemService.GetAllItemsAsync();
-            return Ok(items);
-        }
-
-        [HttpPost]
+            try
+            {
+                var items = await _itemService.GetAllItemsAsync();
+                return Ok(items);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpPost]
         public async Task<IActionResult> Create(CreateItemDTO createItemDto)
         {
-            var item = await _itemService.AddItemAsync(createItemDto);
-            return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
-        }
-
-        [HttpPut("{id}")]
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                
+                var item = await _itemService.AddItemAsync(createItemDto);
+                return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }[HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Item item)
         {
-            if (id != item.Id) return BadRequest();
-            await _itemService.UpdateItemAsync(item);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
+            try
+            {
+                if (id != item.Id) return BadRequest();
+                await _itemService.UpdateItemAsync(item);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _itemService.DeleteItemAsync(id);
-            return NoContent();
+            try
+            {
+                await _itemService.DeleteItemAsync(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

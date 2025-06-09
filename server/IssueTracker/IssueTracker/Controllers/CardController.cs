@@ -14,43 +14,73 @@ namespace IssueTracker.Controllers
         public CardController(CardService cardService)
         {
             _cardService = cardService;
-        }
-
-        [HttpGet("{id}")]
+        }        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var card = await _cardService.GetCardByIdAsync(id);
-            if (card == null) return NotFound();
-            return Ok(card);
-        }
-
-        [HttpGet("GetAllCards")]
+            try
+            {
+                var card = await _cardService.GetCardByIdAsync(id);
+                if (card == null) return NotFound();
+                return Ok(card);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpGet("GetAllCards")]
         public async Task<IActionResult> GetAll()
         {
-            var cards = await _cardService.GetAllCardsAsync();
-            return Ok(cards);
-        }
-
-        [HttpPost]
+            try
+            {
+                var cards = await _cardService.GetAllCardsAsync();
+                return Ok(cards);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpPost]
         public async Task<IActionResult> Create(CreateCardDTO cardDto)
         {
-            var card = await _cardService.AddCardAsync(cardDto);
-            return CreatedAtAction(nameof(GetById), new { id = card.Id }, card);
-        }
-
-        [HttpPut("{id}")]
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                
+                var card = await _cardService.AddCardAsync(cardDto);
+                return CreatedAtAction(nameof(GetById), new { id = card.Id }, card);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }[HttpPut("{id}")]
         public async Task<IActionResult> Update(UpdateCardDTO updateCardDTO)
         {
-            if (updateCardDTO.Id ==0) return BadRequest();
-            await _cardService.UpdateCardAsync(updateCardDTO);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
+            try
+            {
+                if (updateCardDTO.Id ==0) return BadRequest();
+                await _cardService.UpdateCardAsync(updateCardDTO);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _cardService.DeleteCardAsync(id);
-            return NoContent();
+            try
+            {
+                await _cardService.DeleteCardAsync(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

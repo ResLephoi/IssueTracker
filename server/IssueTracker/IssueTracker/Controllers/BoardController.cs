@@ -17,46 +17,83 @@ namespace IssueTracker.Controllers
         }        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var board = await _boardService.GetBoardByIdAsync(id);
-            if (board == null) return NotFound();
-            return Ok(board);
-        }
-
-        [HttpGet("{id}/details")]
+            try
+            {
+                var board = await _boardService.GetBoardByIdAsync(id);
+                if (board == null) return NotFound();
+                return Ok(board);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpGet("{id}/details")]
         public async Task<IActionResult> GetBoardWithItemsAndCards(int id)
         {
-            var board = await _boardService.GetBoardWithItemsAndCardsAsync(id);
-            if (board == null) return NotFound();
-            return Ok(board);
-        }
-
-        [HttpGet]
+            try
+            {
+                var board = await _boardService.GetBoardWithItemsAndCardsAsync(id);
+                if (board == null) return NotFound();
+                return Ok(board);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var boards = await _boardService.GetAllBoardsAsync();
-            return Ok(boards);
-        }
-
-        [HttpPost]
+            try
+            {
+                var boards = await _boardService.GetAllBoardsAsync();
+                return Ok(boards);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpPost]
         public async Task<IActionResult> Create(CreateBoardDTO createBoardDto)
         {
-            var board = await _boardService.AddBoardAsync(createBoardDto);
-            return CreatedAtAction(nameof(GetById), new { id = board.Id }, board);
-        }
-
-        [HttpPut("{id}")]
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                
+                var board = await _boardService.AddBoardAsync(createBoardDto);
+                return CreatedAtAction(nameof(GetById), new { id = board.Id }, board);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }[HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Board board)
         {
-            if (id != board.Id) return BadRequest();
-            await _boardService.UpdateBoardAsync(board);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
+            try
+            {
+                if (id != board.Id) return BadRequest();
+                await _boardService.UpdateBoardAsync(board);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _boardService.DeleteBoardAsync(id);
-            return NoContent();
+            try
+            {
+                await _boardService.DeleteBoardAsync(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }
