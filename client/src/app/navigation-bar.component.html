@@ -1,0 +1,31 @@
+<div class="app-container">
+  <header class="app-header">
+    <div class="header-content">
+      <div class="left-section">
+        <h1 class="app-title">Issue Tracker</h1>
+      </div>
+      
+      <div class="right-section" *ngIf="currentUser">
+        <div class="user-dropdown">
+          <button class="user-menu-button" (click)="toggleUserMenu()">
+            <span class="user-icon">👤</span>
+            Hi, {{ currentUser.username }}
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <div class="dropdown-menu" *ngIf="showUserMenu">
+            <a href="#" class="dropdown-item" (click)="logout(); $event.preventDefault()">
+              <span class="item-icon">🚪</span>
+              Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-content">
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

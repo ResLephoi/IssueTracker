@@ -1,0 +1,68 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-header-image"></div>
+      <h1 class="login-title">Issue Tracker Login</h1>
+      <p class="login-subtitle">Please sign in to continue</p>
+    </div>
+    
+    <div class="login-content">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input 
+              id="username"
+              type="text" 
+              placeholder="Enter your username" 
+              formControlName="username"
+              [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+            >
+          </div>
+          <div class="error-hint" *ngIf="loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched">
+            Username is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input 
+              id="password"
+              [type]="hidePassword ? 'password' : 'text'" 
+              placeholder="Enter your password" 
+              formControlName="password"
+              [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            >
+            <button 
+              type="button" 
+              class="toggle-password" 
+              (click)="hidePassword = !hidePassword"
+            >
+              {{ hidePassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+          <div class="error-hint" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+            Password is required
+          </div>
+          <div class="error-hint" *ngIf="loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched">
+            Password must be at least 6 characters
+          </div>
+        </div>
+        
+        <div *ngIf="loginError" class="error-message">
+          {{ loginError }}
+        </div>
+        
+        <div class="button-container">
+          <button type="submit" [disabled]="isSubmitting" class="login-button">
+            <span *ngIf="!isSubmitting">Login</span>
+            <span *ngIf="isSubmitting" class="spinner"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

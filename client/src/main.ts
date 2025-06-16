@@ -1,18 +1,31 @@
-import { Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { BoardComponent } from './app/features/board/board.component';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, HttpInterceptorFn } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { NavigationBarComponent } from './app/navigation-bar.component';
+import { routes } from './app/app.routes';
+import { inject } from '@angular/core';
+import { AuthService } from './core/services/auth.service';
 
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [BoardComponent],
-  template: `
-    <app-board></app-board>
-  `
-})
-export class App {}
+// Functional interceptor approach
+const authInterceptorFn: HttpInterceptorFn = (req, next) => {
+  const currentUser = inject(AuthService).currentUserValue;
+  
+  if (currentUser && currentUser.token) {
+    // Clone the request and add auth header
+    const authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${currentUser.token}`
+      }
+    });
+    return next(authReq);
+  }
+  
+  return next(req);
+};
 
-bootstrapApplication(App, {
-  providers: [provideHttpClient()]
+bootstrapApplication(NavigationBarComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([authInterceptorFn])),
+    provideRouter(routes)
+  ]
 });

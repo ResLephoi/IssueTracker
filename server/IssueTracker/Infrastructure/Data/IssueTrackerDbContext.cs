@@ -10,8 +10,9 @@ namespace IssueTracker.Infrastructure.Data
         public DbSet<Board> Boards { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Card> Cards { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<LoginRequest> LoginRequests { get; set; }
+        
+         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -24,6 +25,12 @@ namespace IssueTracker.Infrastructure.Data
                 .HasMany(i => i.Cards)
                 .WithOne(c => c.Item)
                 .HasForeignKey(c => c.ItemId);
+
+            modelBuilder.Entity<LoginRequest>(entity =>
+            {
+                entity.HasIndex(e => e.Username).IsUnique();
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+            });
         }
     }
 }
