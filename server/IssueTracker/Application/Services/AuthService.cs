@@ -22,7 +22,7 @@ namespace IssueTracker.Application.Services
                     Message = "Username and password are required"
                 };
             }
-    
+
             var user = await _authRepository.GetUserByUsernameAsync(request.Username);
 
             if (user == null)
@@ -51,6 +51,11 @@ namespace IssueTracker.Application.Services
                 Token = "mock-jwt-token",
                 Username = user.Username
             };
+        }
+
+        public async Task<IEnumerable<GetUsersRequestDTO>> GetUsersAsync()
+        {
+            return await _authRepository.GetAllUsersAsync();
         }
     }
 }

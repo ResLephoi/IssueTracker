@@ -1,5 +1,5 @@
 using AutoMapper;
-using Domain.DTOs;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
 using IssueTracker.Controllers;
 using IssueTracker.Domain.Entities;

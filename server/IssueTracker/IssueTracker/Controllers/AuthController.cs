@@ -32,5 +32,17 @@ namespace IssueTracker.Controllers
 
             return Ok(new { result.Success, result.Token, result.Username });
         }
+
+        [HttpGet("GetUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _authService.GetUsersAsync();
+            if (users == null || !users.Any())
+            {
+                return NotFound(new { Message = "No users found" });
+            }
+
+            return Ok(users);
+        }
     }
 }

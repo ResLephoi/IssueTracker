@@ -1,4 +1,4 @@
-using Domain.DTOs;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Domain.Entities;
 using IssueTracker.Domain.Interfaces;
 using IssueTracker.Infrastructure.Data;

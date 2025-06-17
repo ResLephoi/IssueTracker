@@ -2,7 +2,7 @@
 
 namespace IssueTracker.Domain.Entities
 {
-    public class LoginRequest
+    public class SystemUser
     {
         public int Id { get; set; }
         public string Username { get; set; }

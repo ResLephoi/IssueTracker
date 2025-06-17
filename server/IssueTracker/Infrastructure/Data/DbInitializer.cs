@@ -14,14 +14,13 @@ namespace IssueTracker.Infrastructure.Data
             using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<IssueTrackerDbContext>();
-                
-                // Only seed if there are no users yet
-                if (!dbContext.LoginRequests.Any())
+                  // Only seed if there are no users yet
+                if (!dbContext.SystemUsers.Any())
                 {
                     Console.WriteLine("Seeding users...");
                     
                     // Create admin user
-                    dbContext.LoginRequests.Add(new LoginRequest
+                    dbContext.SystemUsers.Add(new SystemUser
                     {
                         Username = "admin",
                         Password = PasswordHasher.HashPassword("admin123"),
@@ -30,7 +29,7 @@ namespace IssueTracker.Infrastructure.Data
                     });
                     
                     // Create regular user
-                    dbContext.LoginRequests.Add(new LoginRequest
+                    dbContext.SystemUsers.Add(new SystemUser
                     {
                         Username = "user",
                         Password = PasswordHasher.HashPassword("user123"),

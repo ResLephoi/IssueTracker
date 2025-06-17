@@ -1,6 +1,6 @@
 using IssueTracker.Domain.Interfaces;
 using IssueTracker.Domain.Entities;
-using Domain.DTOs;
+using IssueTracker.Domain.DTOs;
 using AutoMapper;
 
 namespace IssueTracker.Application.Services

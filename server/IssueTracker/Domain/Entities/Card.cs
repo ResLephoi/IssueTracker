@@ -12,5 +12,8 @@ namespace IssueTracker.Domain.Entities
         [ForeignKey("ItemId")]
         public int ItemId { get; set; }
         public Item Item { get; set; }
+          [ForeignKey("AssignedToUserId")]
+        public int? AssignedToUserId { get; set; }
+        public SystemUser? AssignedToUser { get; set; }
     }
 }

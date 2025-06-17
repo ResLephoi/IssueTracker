@@ -1,7 +1,4 @@
-using Domain.DTOs;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+using IssueTracker.Domain.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 

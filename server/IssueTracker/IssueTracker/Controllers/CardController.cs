@@ -1,6 +1,5 @@
-using Domain.DTOs;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
-using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IssueTracker.Controllers
