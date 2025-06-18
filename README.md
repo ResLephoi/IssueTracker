@@ -13,9 +13,7 @@ IssueTracker
 │   ├── tsconfig.json     # TypeScript configuration for the client
 │   └── README.md         # Documentation for the client application
 └── server                # Server-side application
-    ├── src               # Source files for the Node.js app
-    ├── package.json      # NPM dependencies for the server
-    ├── tsconfig.json     # TypeScript configuration for the server
+    ├── src               # Source files for the ASP.Net Core app
     └── README.md         # Documentation for the server application
 ```
 
@@ -42,19 +40,7 @@ The client application is built using Angular and provides a user interface for 
 
 ## Server Application
 
-The server application is built using Node.js and Express. It provides an API for managing tasks and interacts with a database to store task data.
-
-### Setup Instructions
-
-1. Navigate to the `server` directory.
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Run the application:
-   ```
-   npm start
-   ```
+The server application is built using ASP.Net Core. It provides an API for managing tasks and interacts with a database to store task data.
 
 ## Contributing
 
