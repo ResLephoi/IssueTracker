@@ -14,6 +14,11 @@ IssueTracker
 │   └── README.md         # Documentation for the client application
 └── server                # Server-side application
     ├── src               # Source files for the ASP.Net Core app
+    ├── Application       # Application layer (Business logic)
+    ├── Domain            # Domain layer (Entities and interfaces)
+    ├── Infrastructure    # Infrastructure layer (Data access, Migrations)
+    ├── IssueTracker      # Main web application
+    ├── IssueTrackerTests # Integration & Unit tests
     └── README.md         # Documentation for the server application
 ```
 
