@@ -4,4 +4,5 @@ export interface Card {
     description: string;
     labels: string[];
     itemId?: number;
+    assignedToUserId?: number;
   }

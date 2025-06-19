@@ -13,5 +13,6 @@ namespace IssueTracker.Domain.DTOs
         public string Description { get; set; }
         public List<string> Labels { get; set; }
         public int ItemId { get; set; }
+        public int? AssignedUserId { get; set; }
     }
 }

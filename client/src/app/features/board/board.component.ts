@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Card } from '../../../models/card.model';
 import { List } from '../../../models/list.model';
 import { Board } from '../../../models/board.model';
+import { User } from '../../../models/user.model';
 import { BoardService } from '../../../core/services/board.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ListItemId } from '../../constants/constants';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule],
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.less']
 })
@@ -27,17 +29,38 @@ export class BoardComponent {
   currentList: List | null = null;
   cardForm: FormGroup;
   connectedLists: string[] = [];
+  users: User[] = [];
+  selectedFilter: string = '';
+  filteredCards: { [listId: string]: Card[] } = {};
+  showingFilteredView: boolean = false;
 
-  constructor(private fb: FormBuilder, private boardService: BoardService) {
+  constructor(
+    private fb: FormBuilder, 
+    private boardService: BoardService, 
+    private authService: AuthService
+  ) {
     this.cardForm = this.fb.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      labels: ['']
+      labels: [''],
+      assignedToUserId: [''] // Changed from assignedUserId to assignedToUserId
     });
   }
 
   ngOnInit() {
     this.initializeBoard();
+    this.loadUsers();    
+  }
+  
+  loadUsers() {
+    this.authService.getUsers().subscribe({
+      next: (users: User[]) => {
+        this.users = users || [];
+        console.log('Loaded users:', this.users);
+      },
+      error: (err) => {        
+      }
+    });
   }
 
   initializeBoard(): void {
@@ -68,7 +91,8 @@ export class BoardComponent {
                   title: card.title,
                   description: card.description,
                   labels: card.labels && card.labels.$values ? card.labels.$values : [],
-                  itemId: card.itemId
+                  itemId: card.itemId,
+                  assignedToUserId: card.assignedToUserId ?? undefined
                 };
               });
             }
@@ -124,7 +148,8 @@ export class BoardComponent {
                 title: card.title,
                 description: card.description,
                 labels: card.labels && card.labels.$values ? card.labels.$values : [],
-                itemId: card.itemId
+                itemId: card.itemId,
+                assignedToUserId: card.assignedToUserId ?? undefined
               };
             });
           }
@@ -179,7 +204,8 @@ export class BoardComponent {
     this.cardForm.patchValue({
       title: card.title,
       description: card.description,
-      labels: card.labels.join(', ')
+      labels: card.labels.join(', '),
+      assignedToUserId: card.assignedToUserId ?? ''
     });
     this.showEditDialog = true;
   }
@@ -208,7 +234,8 @@ export class BoardComponent {
         Object.assign(this.editingCard, {
           title: formValue.title,
           description: formValue.description,
-          labels
+          labels,
+          assignedUserId: formValue.assignedToUserId ?? null
         });
         
         this.boardService.updateCard(this.editingCard).subscribe({
@@ -228,7 +255,8 @@ export class BoardComponent {
           title: formValue.title,
           description: formValue.description,
           labels,
-          itemId: this.currentList.id
+          itemId: this.currentList.id,
+          assignedUserId: formValue.assignedToUserId ?? null
         };
         this.boardService.createCard(payload).subscribe({
           next: (createdCard) => {
@@ -236,7 +264,8 @@ export class BoardComponent {
               id: createdCard.id || Date.now().toString(),
               title: createdCard.title,
               description: createdCard.description,
-              labels: createdCard.labels
+              labels: createdCard.labels,
+              assignedToUserId: createdCard.assignedToUserId ?? null
             };
             this.closeDialog();
             this.refreshBoard();
@@ -250,6 +279,42 @@ export class BoardComponent {
 
       this.closeDialog();
     }
+  }
+
+  filterByUser(userId: string) {
+    this.selectedFilter = userId;
+    
+    if (!userId) {
+      this.showingFilteredView = false;
+      this.filteredCards = {};
+      return;
+    }
+    
+    this.showingFilteredView = true;
+    this.filteredCards = {};
+    
+    const userIdNumber = Number(userId);
+    
+    this.board.lists.forEach(list => {
+      const filteredListCards = list.cards.filter(card => {
+        return card.assignedToUserId === userIdNumber;
+      });
+      this.filteredCards[list.id] = filteredListCards || [];
+    });
+  }
+  
+  getUserById(userId: number | string | undefined): User | undefined {
+    if (userId === null || userId === undefined || !this.users || this.users.length === 0) {
+      return undefined;
+    }
+    
+    const userIdNum = Number(userId);
+   
+    const user = this.users.find(u => {
+      const numId = Number(u.id);
+      return numId === userIdNum;
+    });
+    return user;
   }
 
   closeDialog() {

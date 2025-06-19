@@ -42,6 +42,7 @@ namespace IssueTracker.Application.Services
                 card.Description = cardDto.Description;
                 card.ItemId = cardDto.ItemId;                
                 card.Labels = cardDto.Labels;
+                card.AssignedToUserId = cardDto.AssignedUserId;
                 await _cardRepository.UpdateAsync(card);
             }
             return card;
