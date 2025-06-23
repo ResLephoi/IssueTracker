@@ -2,6 +2,7 @@ using IssueTracker.Domain.Interfaces;
 using IssueTracker.Domain.Entities;
 using IssueTracker.Domain.DTOs;
 using AutoMapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace IssueTracker.Application.Services
 {
@@ -28,6 +29,8 @@ namespace IssueTracker.Application.Services
 
         public async Task<Card> AddCardAsync(CreateCardDTO cardDto)
         {
+            Validator.ValidateObject(cardDto, new ValidationContext(cardDto), validateAllProperties: true);
+
             var card = _mapper.Map<Card>(cardDto);
             await _cardRepository.AddAsync(card);
             return card;
@@ -40,7 +43,7 @@ namespace IssueTracker.Application.Services
             {
                 card.Title = cardDto.Title;
                 card.Description = cardDto.Description;
-                card.ItemId = cardDto.ItemId;                
+                card.ItemId = cardDto.ItemId;
                 card.Labels = cardDto.Labels;
                 card.AssignedToUserId = cardDto.AssignedUserId;
                 await _cardRepository.UpdateAsync(card);

@@ -2,6 +2,7 @@ using AutoMapper;
 using IssueTracker.Domain.DTOs;
 using IssueTracker.Domain.Entities;
 using IssueTracker.Domain.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace IssueTracker.Application.Services
 {
@@ -28,6 +29,8 @@ namespace IssueTracker.Application.Services
 
         public async Task<Item> AddItemAsync(CreateItemDTO itemDto)
         {
+            Validator.ValidateObject(itemDto, new ValidationContext(itemDto), validateAllProperties: true);
+
             var item = _mapper.Map<Item>(itemDto);
             await _itemRepository.AddAsync(item);
             return item;
