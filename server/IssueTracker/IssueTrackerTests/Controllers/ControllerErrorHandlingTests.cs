@@ -1,4 +1,5 @@
 using AutoMapper;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
 using IssueTracker.Controllers;
 using IssueTracker.Domain.Entities;
@@ -81,7 +82,7 @@ public class ControllerErrorHandlingTests
     public async Task ItemController_Create_ExceptionThrown_ReturnsStatusCode500()
     {
         // Arrange
-        var createItemDto = new Domain.DTOs.CreateItemDTO { Title = "Test Item", BoardId = 1 };
+        var createItemDto = new CreateItemDTO { Title = "Test Item", BoardId = 1 };
         var item = new Item { Id = 1, Title = "Test Item", BoardId = 1 };
         
         _mockMapper.Setup(m => m.Map<Item>(createItemDto))

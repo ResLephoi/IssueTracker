@@ -26,7 +26,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpGet("GetAllCards")]
+        }        
+        
+        [HttpGet("GetAllCards")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -38,7 +40,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpPost]
+        }        
+        
+        [HttpPost]
         public async Task<IActionResult> Create(CreateCardDTO cardDto)
         {
             try
@@ -55,7 +59,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }[HttpPut("{id}")]
+        }
+        
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(UpdateCardDTO updateCardDTO)
         {
             try
@@ -68,7 +74,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpDelete("{id}")]
+        }        
+        
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

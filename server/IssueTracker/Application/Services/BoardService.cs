@@ -2,6 +2,7 @@ using AutoMapper;
 using IssueTracker.Domain.DTOs;
 using IssueTracker.Domain.Entities;
 using IssueTracker.Domain.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace IssueTracker.Application.Services
 {
@@ -33,6 +34,8 @@ namespace IssueTracker.Application.Services
 
         public async Task<Board> AddBoardAsync(CreateBoardDTO boardDto)
         {
+            Validator.ValidateObject(boardDto, new ValidationContext(boardDto), validateAllProperties: true);
+            
             var board = _mapper.Map<Board>(boardDto);
             await _boardRepository.AddAsync(board);
             return board;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Domain.DTOs;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
 using IssueTracker.Controllers;
 using IssueTracker.Domain.Entities;
@@ -100,7 +100,7 @@ public class CardControllerTests
     public async Task Create_ValidCard_ReturnsCreatedAtAction()
     {
         // Arrange
-        var createCardDTO = new CreateCardDTO { Title = "New Card", Description = "New Description" };
+        var createCardDTO = new CreateCardDTO { ItemId = 1, Title = "New Card", Description = "New Description" };
         var createdCard = new Card { Id = 1, Title = "New Card", Description = "New Description" };
         
         _mockMapper.Setup(m => m.Map<Card>(createCardDTO))
