@@ -21,16 +21,13 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           
-      - name: 📦 Cache NuGet Packages
+      - name: Cache NuGet Packages
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-  
-
-      - name: List files in working directory
-        run: ls -R
         
       - name: Restore dependencies
         working-directory: server/IssueTracker
