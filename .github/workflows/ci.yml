@@ -16,11 +16,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Restore dependencies
-        run: dotnet restore
-        working-directory: src/IssueTracker
+        run: dotnet restore server/IssueTracker/IssueTracker.sln
       - name: Build
-        run: dotnet build --no-restore --configuration Release
-        working-directory: src/IssueTracker
+        run: dotnet build server/IssueTracker/IssueTracker.sln --no-restore --configuration Release
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
-        working-directory: src/IssueTracker
+        run: dotnet test server/IssueTracker/IssueTracker.sln --no-build --configuration Release --verbosity normal
