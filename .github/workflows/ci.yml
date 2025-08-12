@@ -9,7 +9,7 @@ env:
   DOTNET_VERSION: '8.0.x'
   
   # Solution and Project Paths
-  SOLUTION_PATH: 'server/IssueTracker'
+  SOLUTION_PATH: 'server/IssueTracker/'
   
   # Build Configuration
   BUILD_CONFIGURATION: 'Release'
