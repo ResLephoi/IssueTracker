@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened, closed]
 env:
   DOTNET_VERSION: '8.0.x'
-  SOLUTION_PATH: 'server/IssueTracker/IssueTracker.sln'
+  SOLUTION_PATH: 'IssueTracker.sln'
   BUILD_CONFIGURATION: 'Release'
   
 jobs:
@@ -30,10 +30,13 @@ jobs:
             ${{ runner.os }}-nuget-  
                 
       - name: Restore dependencies
+        working-directory: server/IssueTracker
         run: dotnet restore ${{ env.SOLUTION_PATH }}
         
       - name: Build
+        working-directory: server/IssueTracker
         run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
         
       - name: Test
-        run: dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration  ${{ env.BUILD_CONFIGURATION }} --verbosity normal
+        working-directory: server/IssueTracker
+        run: dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal
