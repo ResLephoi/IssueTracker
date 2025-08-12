@@ -5,13 +5,8 @@ on:
     branches: [ main ]
     types: [opened, synchronize, reopened, closed]
 env:
-  # .NET Configuration
   DOTNET_VERSION: '8.0.x'
-  
-  # Solution and Project Paths
-  SOLUTION_PATH: 'server/IssueTracker/'
-  
-  # Build Configuration
+  SOLUTION_PATH: 'server/IssueTracker/IssueTracker.sln'
   BUILD_CONFIGURATION: 'Release'
   
 jobs:
