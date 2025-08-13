@@ -1,10 +1,13 @@
 name: CI
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened, closed]
 env:
+  NODE_VERSION: '20.x'
   DOTNET_VERSION: '8.0.x'
   SOLUTION_PATH: 'IssueTracker.sln'
   BUILD_CONFIGURATION: 'Release'
@@ -37,6 +40,38 @@ jobs:
         working-directory: server/IssueTracker
         run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
         
-      - name: Test
+      - name: Test with Coverage
         working-directory: server/IssueTracker
-        run: dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal
+        run: |
+          dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage.xml
+
+      - name: Verify coverage > 50%
+        working-directory: server/IssueTracker
+        run: |
+          COVERAGE=$(xmllint --xpath "string(//*[local-name()='coverage']/@line-rate)" coverage.xml)
+          COVERAGE_PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
+          echo "Coverage: $COVERAGE_PERCENT%"
+          if (( $(echo "$COVERAGE_PERCENT < 50.0" | bc -l) )); then
+            echo "Code coverage is below 50%."
+            exit 1
+          fi
+
+  client-build:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Build client
+        working-directory: client
+        run: npm run build
