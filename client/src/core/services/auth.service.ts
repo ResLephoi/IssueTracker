@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { User, LoginRequest, LoginResponse } from '../../models/user.model';
@@ -12,18 +12,24 @@ export class AuthService {  private currentUserSubject = new BehaviorSubject<Use
   private apiUrl = 'https://localhost:7069/api/Auth';
   
   constructor(private http: HttpClient) {
-    // Check if user is already logged in from localStorage
     this.loadStoredUser();
+  }
+
+  public getAuthHeaders(): HttpHeaders {
+    const user = this.currentUserValue;
+    return new HttpHeaders({
+      'Authorization': user?.token ? `Bearer ${user.token}` : '',
+      'Content-Type': 'application/json'
+    });
   }
 
   private loadStoredUser(): void {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       try {
-        const user: User = JSON.parse(storedUser);
-        this.currentUserSubject.next(user);
-      } catch (error) {
-        localStorage.removeItem('currentUser');
+        this.currentUserSubject.next(JSON.parse(storedUser));
+      } catch {
+        this.logout();
       }
     }
   }
@@ -33,7 +39,7 @@ export class AuthService {  private currentUserSubject = new BehaviorSubject<Use
   }
 
   public isLoggedIn(): boolean {
-    return !!this.currentUserValue;
+    return !!this.currentUserValue?.token;
   }
 
   login(loginRequest: LoginRequest): Observable<User> {
@@ -71,8 +77,9 @@ export class AuthService {  private currentUserSubject = new BehaviorSubject<Use
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }  
-    getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/GetUsers`)
+  
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/GetUsers`, { headers: this.getAuthHeaders() })
       .pipe(
         map((response: any) => {
           console.log('Users API response:', response);

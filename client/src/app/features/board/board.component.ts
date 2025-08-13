@@ -303,9 +303,9 @@ export class BoardComponent {
     });
   }
   
-  getUserById(userId: number | string | undefined): User | undefined {
+  getUserById(userId: number | string | undefined): string {
     if (userId === null || userId === undefined || !this.users || this.users.length === 0) {
-      return undefined;
+      return '';
     }
     
     const userIdNum = Number(userId);
@@ -314,7 +314,15 @@ export class BoardComponent {
       const numId = Number(u.id);
       return numId === userIdNum;
     });
-    return user;
+    
+    if (!user) return '';
+    
+    return this.addMeIfCurrentUser(user.username);
+  }
+
+  addMeIfCurrentUser(username: string): string {
+    const currentUser = this.authService.currentUserValue;
+    return currentUser && currentUser.username === username ? `${username} (Me)` : username;
   }
 
   closeDialog() {

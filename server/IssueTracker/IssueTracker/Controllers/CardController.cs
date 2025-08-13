@@ -1,11 +1,13 @@
-using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
+using IssueTracker.Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IssueTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CardController : ControllerBase
     {
         private readonly CardService _cardService;
