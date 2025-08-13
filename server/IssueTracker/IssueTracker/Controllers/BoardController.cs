@@ -2,11 +2,13 @@
 using IssueTracker.Application.Services;
 using IssueTracker.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IssueTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class BoardController : ControllerBase
     {
         private readonly BoardService _boardService;

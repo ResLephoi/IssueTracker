@@ -46,7 +46,7 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value)
       .subscribe({
-        next: () => {
+        next: (user) => {
           this.router.navigate(['/board']);
         },
         error: error => {

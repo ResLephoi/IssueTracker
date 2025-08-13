@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IssueTracker.Controllers
 {
@@ -34,6 +35,7 @@ namespace IssueTracker.Controllers
         }
 
         [HttpGet("GetUsers")]
+        [Authorize]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _authService.GetUsersAsync();
@@ -43,6 +45,20 @@ namespace IssueTracker.Controllers
             }
 
             return Ok(users);
+        }
+
+        [HttpGet("validate-token")]
+        [Authorize]
+        public IActionResult ValidateToken()
+        {
+            var username = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ??
+                          User.FindFirst("sub")?.Value;
+            
+            return Ok(new { 
+                Message = "Token is valid", 
+                Username = username,
+                Timestamp = DateTime.UtcNow 
+            });
         }
     }
 }

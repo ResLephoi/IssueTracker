@@ -1,12 +1,14 @@
-using IssueTracker.Domain.DTOs;
 using IssueTracker.Application.Services;
+using IssueTracker.Domain.DTOs;
 using IssueTracker.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IssueTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ItemController : ControllerBase
     {
         private readonly ItemService _itemService;

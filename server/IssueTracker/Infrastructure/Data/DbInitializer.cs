@@ -17,7 +17,7 @@ namespace IssueTracker.Infrastructure.Data
                   // Only seed if there are no users yet
                 if (!dbContext.SystemUsers.Any())
                 {
-                    Console.WriteLine("Seeding users...");
+                    Console.WriteLine("Seeding sys users...");
                     
                     // Create admin user
                     dbContext.SystemUsers.Add(new SystemUser
