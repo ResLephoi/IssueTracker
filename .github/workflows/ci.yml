@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: client
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build client
         working-directory: client
