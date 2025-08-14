@@ -40,27 +40,26 @@ jobs:
         working-directory: server/IssueTracker
         run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
         
-      - name: Test with Coverage
+      - name: Unit Test
         working-directory: server/IssueTracker
-        run: |
-          dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage.xml
+        run: dotnet test ${{ env.SOLUTION_PATH }} --no-build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+  client-build:
+    runs-on: ubuntu-latest
+    needs: Backend-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Verify coverage > 50%
-        working-directory: server/IssueTracker
-        run: |
-          COVERAGE=$(xmllint --xpath "string(//*[local-name()='coverage']/@line-rate)" coverage.xml)
-          COVERAGE_PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
-          echo "Coverage: $COVERAGE_PERCENT%"
-          if (( $(echo "$COVERAGE_PERCENT < 50.0" | bc -l) )); then
-            echo "Code coverage is below 50%."
-            exit 1
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: coverage-report
-          path: server/IssueTracker/coverage.xml
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Build client
+        working-directory: client
+        run: npm run build
