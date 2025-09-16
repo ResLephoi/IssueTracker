@@ -22,6 +22,14 @@ IssueTracker
     └── README.md         # Documentation for the server application
 ```
 
+## Tech Stack
+
+- Angular (TypeScript, RxJS, Angular CLI)
+- ASP.Net Core (C#, Entity Framework Core, AutoMapper)
+- JWT Authentication
+- Swagger for API documentation
+- MSTest and Moq for unit testing
+
 ## Client Application
 
 The client application is built using Angular and provides a user interface for managing tasks. It includes features such as:
