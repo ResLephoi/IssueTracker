@@ -4,7 +4,7 @@
   <label class="UserFilter" for="userFilter">Filter by User:</label>
   <select id="userFilter" [(ngModel)]="selectedFilter" (change)="filterByUser(selectedFilter)">
     <option value="">All Users</option>
-    <option *ngFor="let user of users" [value]="user.id">{{ addMeIfCurrentUser(user.username) }}</option>
+    <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
   </select>
   <button *ngIf="showingFilteredView" (click)="filterByUser('')">Clear Filter</button>
 </div>
@@ -32,7 +32,7 @@
         <h3>{{ card.title }}</h3>
         <p>{{ card.description }}</p>
         <p *ngIf="card.labels && card.labels.length">Labels: {{ card.labels.join(', ') }}</p>
-        <p *ngIf="card.assignedToUserId">Assigned to: {{ getUserById(card.assignedToUserId) }}</p>
+        <p *ngIf="card.assignedToUserId">Assigned to: {{ getUserById(card.assignedToUserId)?.username }}</p>
         <button (click)="editCard(card)">Edit</button>
         <button (click)="deleteCard(list, card)">Delete</button>
       </div>
@@ -54,7 +54,7 @@
     <label for="assignedUser">Assigned To User:</label>
     <select id="assignedUser" formControlName="assignedToUserId">
       <option value="">Unassigned</option>
-      <option *ngFor="let user of users" [value]="user.id">{{ addMeIfCurrentUser(user.username) }}</option>
+      <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
     </select>
     
     <div style="display: flex; justify-content: flex-end; gap: 8px;">

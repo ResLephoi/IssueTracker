@@ -55,7 +55,7 @@ namespace IssueTracker.Controllers
                           User.FindFirst("sub")?.Value;
             
             return Ok(new { 
-                Message = "Token is valid", 
+                Message = "Token is valid",  
                 Username = username,
                 Timestamp = DateTime.UtcNow 
             });
