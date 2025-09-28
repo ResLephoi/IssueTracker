@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Card } from '../../../models/card.model';
 import { List } from '../../../models/list.model';
@@ -8,16 +8,20 @@ import { Board } from '../../../models/board.model';
 import { User } from '../../../models/user.model';
 import { BoardService } from '../../../core/services/board.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ListItemId } from '../../constants/constants';
+import { ToastService } from '../../core/services/toast.service';
+import { CardComponent } from '../card/card.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, CardComponent],
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.less']
+  styleUrls: ['../../../global_styles.css', './board.component.less'],
+  encapsulation: ViewEncapsulation.None
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit {
+  @ViewChild(CardComponent) cardComponent!: CardComponent;
+
   board: Board = {
     id: '1',
     title: 'Project Tasks',
@@ -27,25 +31,19 @@ export class BoardComponent {
   showEditDialog = false;
   editingCard: Card | null = null;
   currentList: List | null = null;
-  cardForm: FormGroup;
   connectedLists: string[] = [];
   users: User[] = [];
   selectedFilter: string = '';
+  searchTerm: string = '';
   filteredCards: { [listId: string]: Card[] } = {};
   showingFilteredView: boolean = false;
+  isRefreshing = false;
 
   constructor(
-    private fb: FormBuilder, 
     private boardService: BoardService, 
-    private authService: AuthService
-  ) {
-    this.cardForm = this.fb.group({
-      title: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      labels: [''],
-      assignedToUserId: [''] // Changed from assignedUserId to assignedToUserId
-    });
-  }
+    private authService: AuthService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit() {
     this.initializeBoard();
@@ -55,10 +53,19 @@ export class BoardComponent {
   loadUsers() {
     this.authService.getUsers().subscribe({
       next: (users: User[]) => {
-        this.users = users || [];
-        console.log('Loaded users:', this.users);
+        this.users = users || [];        
       },
       error: (err) => {        
+        // Show more specific error messages
+        if (err.status === 0) {
+          this.toastService.error('Cannot connect to server. Please check if the API server is running on https://localhost:7069');
+        } else if (err.status === 401) {
+          this.toastService.error('Authentication failed. Please log in again.');
+        } else if (err.status === 404) {
+          this.toastService.error('Users endpoint not found. Please check API configuration.');
+        } else {
+          this.toastService.warning('Failed to load users for assignment. Some features may be limited.');
+        }
       }
     });
   }
@@ -104,27 +111,26 @@ export class BoardComponent {
           
           this.connectedLists = this.board.lists.map(list => list.id);
         } else {
-          console.error('Invalid board details response:', apiResponse);
-          
           // Initialize with empty lists if not present in response
           this.board.lists = this.board.lists || [];
           this.connectedLists = this.board.lists.map(list => list.id);
         }
       },
       error: (err) => {
-        console.error('Failed to load board details', err);
       }
     });
   }
   
   refreshBoard(): void {
+    if (this.isRefreshing) {
+      return; // Prevent multiple simultaneous refresh operations
+    }
+    
+    this.isRefreshing = true;
     this.boardService.getBoardDetails(this.board.id).subscribe({
       next: (apiResponse: any) => {
-        console.log('Board refresh response:', apiResponse);
-        
         // Check if we have valid response with items
         if (!apiResponse || !apiResponse.items || !apiResponse.items.$values) {
-          console.error('Invalid board details in refresh - missing items array:', apiResponse);
           return;
         }
         
@@ -160,9 +166,17 @@ export class BoardComponent {
         this.board = convertedBoard;
         
         this.connectedLists = this.board.lists.map(list => list.id);
+        
+        // Reapply filters if they were active
+        if (this.showingFilteredView) {
+          this.applyFilters();
+        }
+        
+        this.isRefreshing = false;
       },
       error: (err) => {
-        console.error('Failed to refresh board', err);
+        this.toastService.error('Failed to refresh board data. Please refresh the page.');
+        this.isRefreshing = false;
       }
     });
   }
@@ -183,10 +197,18 @@ export class BoardComponent {
       
       this.boardService.updateCard(movedCard).subscribe({
         next: (updatedCard) => {
-          console.log('Card updated successfully', updatedCard);
+          const cardTitle = updatedCard?.title || movedCard?.title || 'Card';
+          this.toastService.success(`Card "${cardTitle}" moved successfully!`);
         },
         error: (err) => {
-          console.error('Failed to update card', err);
+          this.toastService.error('Failed to move card. Please try again.');
+          // Revert the move on error
+          transferArrayItem(
+            event.container.data,
+            event.previousContainer.data,
+            event.currentIndex,
+            event.previousIndex
+          );
         }
       });
     }
@@ -195,96 +217,39 @@ export class BoardComponent {
   openNewCardDialog(list: List) {
     this.currentList = list;
     this.editingCard = null;
-    this.cardForm.reset();
     this.showEditDialog = true;
   }
 
   editCard(card: Card) {
     this.editingCard = card;
-    this.cardForm.patchValue({
-      title: card.title,
-      description: card.description,
-      labels: card.labels.join(', '),
-      assignedToUserId: card.assignedToUserId ?? ''
-    });
     this.showEditDialog = true;
   }
 
-  deleteCard(list: List, card: Card) {       
-      this.boardService.deleteCard(card.id).subscribe({
-        next: () => {
-          console.log('Card deleted successfully');
-          this.refreshBoard();
-        },
-        error: (err) => {
-          console.error('Failed to delete card', err);
-        }
-      });
+  deleteCard(list: List, card: Card) {
+    // Use the card component's delete functionality with confirmation
+    this.cardComponent?.deleteCard(card);
   }
-  
-  
-  saveCard() {
-    if (this.cardForm.valid) {
-      const formValue = this.cardForm.value;
-      const labels = formValue.labels
-        ? formValue.labels.split(',').map((label: string) => label.trim())
-        : [];
 
-      if (this.editingCard) {
-        Object.assign(this.editingCard, {
-          title: formValue.title,
-          description: formValue.description,
-          labels,
-          assignedUserId: formValue.assignedToUserId ?? null
-        });
-        
-        this.boardService.updateCard(this.editingCard).subscribe({
-          next: (updatedCard) => {
-            console.log('Card updated successfully', updatedCard);
-            this.closeDialog();
-            this.refreshBoard();
-          },
-          error: (err) => {
-            console.error('Failed to update card', err);
-            this.closeDialog();
-          }
-        });
-        return;
-      } else if (this.currentList) {
-        const payload = {
-          title: formValue.title,
-          description: formValue.description,
-          labels,
-          itemId: this.currentList.id,
-          assignedUserId: formValue.assignedToUserId ?? null
-        };
-        this.boardService.createCard(payload).subscribe({
-          next: (createdCard) => {
-            const newCard: Card = {
-              id: createdCard.id || Date.now().toString(),
-              title: createdCard.title,
-              description: createdCard.description,
-              labels: createdCard.labels,
-              assignedToUserId: createdCard.assignedToUserId ?? null
-            };
-            this.closeDialog();
-            this.refreshBoard();
-          },
-          error: (err) => {
-            this.closeDialog();
-          }
-        });
-        return;
-      }
+  onCardSaved() {
+    this.refreshBoard();
+  }
 
-      this.closeDialog();
-    }
+  onCardDeleted() {
+    this.refreshBoard();
   }
 
   filterByUser(userId: string) {
     this.selectedFilter = userId;
-    
-    if (!userId) {
+    this.applyFilters();
+  }
+
+  searchCards(searchTerm: string) {
+    this.searchTerm = searchTerm;
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    if (!this.selectedFilter && !this.searchTerm) {
       this.showingFilteredView = false;
       this.filteredCards = {};
       return;
@@ -293,14 +258,36 @@ export class BoardComponent {
     this.showingFilteredView = true;
     this.filteredCards = {};
     
-    const userIdNumber = Number(userId);
+    const userIdNumber = this.selectedFilter ? Number(this.selectedFilter) : null;
+    const searchTermLower = this.searchTerm.toLowerCase();
     
     this.board.lists.forEach(list => {
       const filteredListCards = list.cards.filter(card => {
-        return card.assignedToUserId === userIdNumber;
+        // Apply user filter
+        let passesUserFilter = true;
+        if (userIdNumber) {
+          passesUserFilter = card.assignedToUserId === userIdNumber;
+        }
+        
+        // Apply search filter
+        let passesSearchFilter = true;
+        if (this.searchTerm) {
+          passesSearchFilter = 
+            card.title.toLowerCase().includes(searchTermLower) ||
+            card.description.toLowerCase().includes(searchTermLower) ||
+            (card.labels && card.labels.some(label => label.toLowerCase().includes(searchTermLower)));
+        }
+        
+        return passesUserFilter && passesSearchFilter;
       });
       this.filteredCards[list.id] = filteredListCards || [];
     });
+  }
+
+  clearFilters() {
+    this.selectedFilter = '';
+    this.searchTerm = '';
+    this.applyFilters();
   }
   
   getUserById(userId: number | string | undefined): User | undefined {
@@ -321,6 +308,5 @@ export class BoardComponent {
     this.showEditDialog = false;
     this.editingCard = null;
     this.currentList = null;
-    this.cardForm.reset();
   }
 }

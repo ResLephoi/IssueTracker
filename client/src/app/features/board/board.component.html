@@ -6,7 +6,17 @@
     <option value="">All Users</option>
     <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
   </select>
-  <button *ngIf="showingFilteredView" (click)="filterByUser('')">Clear Filter</button>
+  
+  <label for="searchInput">Search:</label>
+  <input 
+    id="searchInput" 
+    type="text" 
+    placeholder="Search cards..." 
+    [(ngModel)]="searchTerm" 
+    (input)="searchCards(searchTerm)"
+  />
+  
+  <button *ngIf="showingFilteredView" (click)="clearFilters()">Clear All Filters</button>
 </div>
 
 <div class="board">
@@ -21,8 +31,9 @@
       (cdkDropListDropped)="drop($event)"
     >
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0;">{{ list.title }}</h2>
-        <button (click)="openNewCardDialog(list)">Add Card</button>
+        <h2 [style.margin]="board.lists.indexOf(list) !== 0 ? '0 0 24px 0' : '0'">{{ list.title }}</h2>
+        <button class="btn-success" *ngIf="board.lists.indexOf(list) === 0" (click)="openNewCardDialog(list)">Add Card</button>
+        <div *ngIf="board.lists.indexOf(list) !== 0" style="margin-top: 8px"></div>
       </div>
       <div 
         class="card" 
@@ -33,33 +44,22 @@
         <p>{{ card.description }}</p>
         <p *ngIf="card.labels && card.labels.length">Labels: {{ card.labels.join(', ') }}</p>
         <p *ngIf="card.assignedToUserId">Assigned to: {{ getUserById(card.assignedToUserId)?.username }}</p>
-        <button (click)="editCard(card)">Edit</button>
-        <button (click)="deleteCard(list, card)">Delete</button>
+        <div class="card-actions">
+          <button (click)="editCard(card)">Edit</button>
+          <button class="btn-danger" (click)="deleteCard(list, card)">Delete</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="showEditDialog" class="dialog">
-  <h2>{{ editingCard ? 'Edit Card' : 'New Card' }}</h2>
-  <form [formGroup]="cardForm" (ngSubmit)="saveCard()">
-    <label for="title">Title:</label>
-    <input id="title" formControlName="title" />
-    
-    <label for="description">Description:</label>
-    <textarea id="description" formControlName="description"></textarea>
-    
-    <label for="labels">Labels (comma separated):</label>
-    <input id="labels" formControlName="labels" />
-    <label for="assignedUser">Assigned To User:</label>
-    <select id="assignedUser" formControlName="assignedToUserId">
-      <option value="">Unassigned</option>
-      <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
-    </select>
-    
-    <div style="display: flex; justify-content: flex-end; gap: 8px;">
-      <button type="submit" [disabled]="cardForm.invalid">Save</button>
-      <button type="button" (click)="closeDialog()">Cancel</button>
-    </div>
-  </form>
-</div>
+<app-card 
+  #cardComponent
+  [showEditDialog]="showEditDialog"
+  [editingCard]="editingCard"
+  [currentList]="currentList"
+  [users]="users"
+  (closeDialogEvent)="closeDialog()"
+  (cardSavedEvent)="onCardSaved()"
+  (cardDeletedEvent)="onCardDeleted()">
+</app-card>

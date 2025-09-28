@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { User } from '../models/user.model';
+import { ToastComponent } from './shared/toast/toast.component';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ import { User } from '../models/user.model';
   imports: [
     CommonModule,
     RouterOutlet, 
-    RouterModule
+    RouterModule,
+    ToastComponent
   ],
   templateUrl: './navigation-bar.component.html',
   styleUrls: ['./navigation-bar.component.less']

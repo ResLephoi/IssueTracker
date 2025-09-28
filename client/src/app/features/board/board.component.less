@@ -44,47 +44,7 @@
 }
 
 .card {
-  background-color: white;
   border: 5px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
-  transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  h3 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    color: #353434;
-  }
-
-  p {
-    margin: 0 0 8px;
-    font-size: 12px;
-    color: #666;
-  }
-}
-
-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 4px;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  &:disabled {
-    background: #a5a5a5;
-    cursor: not-allowed;
-  }
 }
 .UserFilter{
   color: #000;
@@ -93,17 +53,32 @@ button {
 .filter-controls {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f0f0f0;
   border-radius: 5px;
 
+  label {
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+  }
+
   select {
     padding: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
     min-width: 200px;
+  }
+
+  input[type="text"] {
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 200px;
+    font-size: 14px;
   }
 
   button {
@@ -113,6 +88,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    white-space: nowrap;
 
     &:hover {
       background-color: #d32f2f;
@@ -120,57 +96,7 @@ button {
   }
 }
 
-.dialog {
-  width: 20%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
 
-  h2 {
-    color: #333;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  input,
-  textarea {
-    margin-bottom: 12px;
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-  }
-
-  label {
-    font-weight: bold;
-    color: #333;
-  }
-
-  textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-
-  select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-}
 
 .cdk-drag-preview {
   box-sizing: border-box;
@@ -186,4 +112,11 @@ button {
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  margin-top: 8px;
 }

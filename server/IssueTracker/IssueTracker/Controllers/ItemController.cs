@@ -16,7 +16,9 @@ namespace IssueTracker.Controllers
         public ItemController(ItemService itemService)
         {
             _itemService = itemService;
-        }        [HttpGet("{id}")]
+        }        
+        
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -29,7 +31,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpGet]
+        }        
+        
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -41,7 +45,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpPost]
+        }        
+        
+        [HttpPost]
         public async Task<IActionResult> Create(CreateItemDTO createItemDto)
         {
             try
@@ -58,7 +64,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }[HttpPut("{id}")]
+        }
+        
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Item item)
         {
             try
@@ -71,7 +79,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpDelete("{id}")]
+        }        
+        
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

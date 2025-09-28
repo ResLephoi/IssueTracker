@@ -67,22 +67,24 @@ export class AuthService {  private currentUserSubject = new BehaviorSubject<Use
         })
       );
   }
+  
   logout(): void {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }  
-    getUsers(): Observable<User[]> {
+  
+  getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/GetUsers`)
       .pipe(
         map((response: any) => {
-          console.log('Users API response:', response);
-          
           let users: User[] = [];
           
-          if (response.$values) {
+          if (response && response.$values) {
             users = response.$values;
           } else if (Array.isArray(response)) {
             users = response;
+          } else {
+            users = [];
           }
           
           // Ensure each user has an id that's preserved as a number if it came in as a number
@@ -91,7 +93,7 @@ export class AuthService {  private currentUserSubject = new BehaviorSubject<Use
             id: user.id // Keep the ID as is (number or string)
           }));
         }),
-        catchError(error =>  {
+        catchError(error => {
           return throwError(() => new Error(error.error?.message || 'Failed to fetch users'));
         })
       );

@@ -23,11 +23,9 @@ const authInterceptorFn: HttpInterceptorFn = (req, next) => {
         Authorization: `Bearer ${currentUser.token}`
       }
     });
-    console.log('Adding auth header to request:', req.url);
     return next(authReq);
   }
   
-  console.log('No auth token available for request:', req.url);
   return next(req);
 };
 
