@@ -65,12 +65,22 @@ body {
 .card h3 {
   margin: 0 0 8px;
   font-size: 14px;
+  color: #333;
 }
 
 .card p {
   margin: 0 0 8px;
   font-size: 12px;
   color: #666;
+}
+
+.card-actions {
+  display: flex;
+  margin-top: 8px;
+}
+
+.card-actions button {
+  font-size: 12px;
 }
 
 button {
@@ -92,18 +102,42 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.dialog {
+.modal-overlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.dialog {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 16px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  z-index: 1001;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  pointer-events: auto;
 }
 
 .dialog form {
@@ -113,15 +147,36 @@ button:disabled {
 }
 
 .dialog input,
-.dialog textarea {
+.dialog textarea,
+.dialog select {
   margin-bottom: 12px;
   padding: 8px;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+}
+
+.dialog select option {
+  color: #333;
+  background-color: #fff;
 }
 
 .dialog label {
   font-weight: bold;
+  color: #333;
+}
+
+.dialog h2 {
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.dialog p {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 10px 0;
 }
 
 .dialog textarea {
@@ -143,4 +198,46 @@ button:disabled {
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+  border: 1px solid #28a745;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
+  }
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #dc3545;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+  }
 }

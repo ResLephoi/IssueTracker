@@ -16,7 +16,9 @@ namespace IssueTracker.Controllers
         public BoardController(BoardService boardService)
         {
             _boardService = boardService;
-        }        [HttpGet("{id}")]
+        }        
+        
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -29,7 +31,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpGet("{id}/details")]
+        }        
+        
+        [HttpGet("{id}/details")]
         public async Task<IActionResult> GetBoardWithItemsAndCards(int id)
         {
             try
@@ -42,7 +46,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpGet]
+        }        
+        
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -54,7 +60,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpPost]
+        }        
+        
+        [HttpPost]
         public async Task<IActionResult> Create(CreateBoardDTO createBoardDto)
         {
             try
@@ -71,7 +79,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }[HttpPut("{id}")]
+        }
+        
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Board board)
         {
             try
@@ -84,7 +94,9 @@ namespace IssueTracker.Controllers
             {
                 return StatusCode(500);
             }
-        }        [HttpDelete("{id}")]
+        }        
+        
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

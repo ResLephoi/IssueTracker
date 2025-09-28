@@ -1,0 +1,41 @@
+<!-- Modal Overlay for Edit Dialog -->
+<div *ngIf="showEditDialog" class="modal-overlay">
+  <div class="modal-backdrop" (click)="closeDialog()"></div>
+  <div class="dialog">
+    <h2>{{ editingCard ? 'Edit Card' : 'New Card' }}</h2>
+    <form [formGroup]="cardForm" (ngSubmit)="saveCard()">
+      <label for="title">Title:</label>
+      <input id="title" formControlName="title" />
+      
+      <label for="description">Description:</label>
+      <textarea id="description" formControlName="description"></textarea>
+      
+      <label for="labels">Labels (comma separated):</label>
+      <input id="labels" formControlName="labels" />
+      
+      <label for="assignedUser">Assigned To User:</label>
+      <select id="assignedUser" formControlName="assignedToUserId">
+        <option value="">Unassigned</option>
+        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+      </select>
+      
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="submit" class="btn-success" [disabled]="cardForm.invalid">Save</button>
+        <button type="button" class="btn-danger" (click)="closeDialog()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Overlay for Delete Confirmation Dialog -->
+<div *ngIf="showDeleteConfirmation" class="modal-overlay">
+  <div class="modal-backdrop" (click)="cancelDelete()"></div>
+  <div class="dialog">
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete the card "{{ cardToDelete?.title }}"?</p>
+    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+      <button class="btn-danger" type="button" (click)="confirmDeleteCard()">Delete</button>
+      <button type="button" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>

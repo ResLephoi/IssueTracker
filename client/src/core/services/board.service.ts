@@ -43,16 +43,12 @@ export class BoardService {
   
   getBoardDetails(boardId: string): Observable<any> {
     const url = `${this.apiUrl}/board/${boardId}/details`;
-    console.log('Fetching board details from URL:', url);
     
     return this.http.get<any>(url, { headers: this.authService.getAuthHeaders() })
       .pipe(
         map((response: any) => {
-          console.log('Raw board details response:', response);
-          
           // If API returns data wrapped in a data property, unwrap it
           if (response.data && typeof response.data === 'object') {
-            console.log('Unwrapping data property from response');
             return response.data;
           }
           
