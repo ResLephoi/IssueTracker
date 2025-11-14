@@ -44,6 +44,7 @@ The client application is built using Angular and provides a user interface for 
 1. Navigate to the `client` directory.
 2. Install dependencies:
    ```
+   Use nvm 22.18.0
    npm install
    ```
 3. Run the application:
@@ -54,6 +55,13 @@ The client application is built using Angular and provides a user interface for 
 ## Server Application
 
 The server application is built using ASP.Net Core. It provides an API for managing tasks and interacts with a database to store task data.
+
+<img width="1908" height="900" alt="image" src="https://github.com/user-attachments/assets/66c0aba5-9ef5-49ea-8580-ff8d7831e0d8" />
+
+<img width="1908" height="906" alt="image" src="https://github.com/user-attachments/assets/933cca78-a03d-4fde-91f6-9202c1826ffe" />
+
+<img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/5e3bd460-8575-4135-aeda-77188a6b8aef" />
+
 
 ## Contributing
 
