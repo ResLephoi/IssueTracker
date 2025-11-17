@@ -56,7 +56,7 @@ The client application is built using Angular and provides a user interface for 
 
 The server application is built using ASP.Net Core. It provides an API for managing tasks and interacts with a database to store task data.
 
-##UI
+## UI
 
 <img width="1908" height="900" alt="image" src="https://github.com/user-attachments/assets/66c0aba5-9ef5-49ea-8580-ff8d7831e0d8" />
 
